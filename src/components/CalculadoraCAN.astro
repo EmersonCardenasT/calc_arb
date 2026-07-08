@@ -1,0 +1,559 @@
+---
+// Sin props por ahora
+---
+
+<div class="max-w-3xl mx-auto pt-10">
+  <!-- Header -->
+  <header class="mb-8 flex items-start justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2.5 mb-1.5">
+        <span
+          class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-amber-400/10 border border-amber-400/30 text-amber-400 font-mono text-xs font-bold"
+          >CAN</span
+        >
+        <h1 class="text-2xl sm:text-[26px] font-bold tracking-tight text-white">
+          Calculadora CAN
+        </h1>
+      </div>
+      <p class="text-sm text-ink-400 max-w-md">
+        Ingresa 2 o 3 valores. El resultado se calcula como la suma de sus
+        recíprocos — el patrón clásico de elementos combinados en paralelo.
+      </p>
+    </div>
+    <button
+      id="btnHistorialToggle"
+      onclick="toggleHistorial()"
+      class="shrink-0 mt-1 text-xs font-mono text-ink-400 hover:text-teal-400 border border-ink-700 hover:border-teal-500/40 rounded-lg px-3 py-2 transition-colors"
+    >
+      Historial (<span id="histCount">0</span>)
+    </button>
+  </header>
+
+  <!-- Schematic -->
+  <div class="bg-ink-900/70 border border-ink-700 rounded-2xl p-4 sm:p-5 mb-5">
+    <svg
+      id="schematic"
+      viewBox="0 0 640 190"
+      class="w-full h-auto select-none"
+      preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <!-- Input card -->
+  <div class="bg-ink-900 border border-ink-700 rounded-2xl p-5 sm:p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+      <div>
+        <label
+          for="can1"
+          class="block text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5"
+          >Rama 1</label
+        >
+        <input
+          type="number"
+          step="any"
+          id="can1"
+          placeholder="0.00"
+          class="num-input w-full bg-ink-800 border border-ink-600 focus:border-amber-500/70 focus:ring-2 focus:ring-amber-500/20 rounded-xl px-3.5 py-3 text-lg font-mono text-white placeholder-ink-500 transition-colors"
+          autofocus
+        />
+      </div>
+
+      <div>
+        <label
+          for="can2"
+          class="block text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5"
+          >Rama 2</label
+        >
+        <input
+          type="number"
+          step="any"
+          id="can2"
+          placeholder="0.00"
+          class="num-input w-full bg-ink-800 border border-ink-600 focus:border-amber-500/70 focus:ring-2 focus:ring-amber-500/20 rounded-xl px-3.5 py-3 text-lg font-mono text-white placeholder-ink-500 transition-colors"
+        />
+      </div>
+
+      <div>
+        <label
+          for="can3"
+          class="block text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5"
+          >Rama 3 <span class="text-ink-600 normal-case">(opcional)</span
+          ></label
+        >
+        <input
+          type="number"
+          step="any"
+          id="can3"
+          placeholder="0.00"
+          class="num-input w-full bg-ink-800 border border-ink-600 focus:border-amber-500/70 focus:ring-2 focus:ring-amber-500/20 rounded-xl px-3.5 py-3 text-lg font-mono text-white placeholder-ink-500 transition-colors"
+        />
+      </div>
+    </div>
+
+    <p id="errorMsg" class="hidden text-sm text-red-400 mb-4 -mt-1"></p>
+
+    <div class="flex gap-3">
+      <button
+        onclick="calcular()"
+        class="flex-1 bg-amber-400 hover:bg-amber-500 text-ink-950 font-semibold rounded-xl px-4 py-3 transition-colors shadow-glow"
+      >
+        Calcular
+      </button>
+      <button
+        onclick="limpiarCampos()"
+        class="text-ink-400 hover:text-white border border-ink-600 hover:border-ink-500 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+      >
+        Limpiar
+      </button>
+    </div>
+  </div>
+
+  <!-- Result card -->
+  <div
+    id="resultCard"
+    class="mt-5 bg-ink-900 border border-ink-700 rounded-2xl p-5 sm:p-6"
+  >
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <div class="text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5">
+          Resultado (Σ 1/x)
+        </div>
+        <div
+          id="resultado"
+          class="font-mono text-3xl sm:text-4xl font-semibold text-ink-300 tracking-tight"
+        >
+          —
+        </div>
+        <div
+          id="badge"
+          class="hidden mt-2 inline-flex items-center gap-1.5 text-xs font-mono px-2.5 py-1 rounded-full"
+        >
+        </div>
+      </div>
+      <button
+        id="btnCopy"
+        onclick="copiarResultado()"
+        class="hidden shrink-0 text-xs font-mono text-ink-400 hover:text-teal-400 border border-ink-700 hover:border-teal-500/40 rounded-lg px-3 py-2 transition-colors"
+      >
+        Copiar
+      </button>
+    </div>
+
+    <div id="equivalenteWrap" class="hidden mt-4 pt-4 border-t border-ink-800">
+      <div class="text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5">
+        Equivalente (1 ÷ resultado)
+      </div>
+      <div id="equivalente" class="font-mono text-lg text-teal-400">—</div>
+      <p class="text-xs text-ink-500 mt-1">
+        Útil si CAN1–CAN3 representan magnitudes combinadas en paralelo
+        (resistencias, conductancias, etc.).
+      </p>
+    </div>
+  </div>
+
+  <!-- Historial -->
+  <div id="historialPanel" class="hidden mt-5 pop-in">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-sm font-mono uppercase tracking-wider text-ink-500">
+        Historial
+      </h2>
+      <button
+        onclick="pedirBorrarTodo()"
+        class="text-xs font-mono text-red-400/80 hover:text-red-400 transition-colors"
+      >
+        Borrar todo
+      </button>
+    </div>
+    <div id="listaHistorial" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
+    <p
+      id="historialVacio"
+      class="hidden text-sm text-ink-500 italic py-6 text-center border border-dashed border-ink-700 rounded-xl"
+    >
+      Aún no hay cálculos guardados.
+    </p>
+  </div>
+
+  <!-- Toast -->
+  <div
+    id="toast"
+    class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-ink-800 border border-ink-600 text-ink-200 text-sm font-medium px-4 py-2.5 rounded-xl shadow-lg z-50"
+  >
+  </div>
+
+  <!-- Confirm modal -->
+  <div
+    id="confirmModal"
+    class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4"
+  >
+    <div class="bg-ink-900 border border-ink-700 rounded-2xl p-6 max-w-sm w-full pop-in">
+      <h3 class="text-white font-semibold mb-2">¿Borrar todo el historial?</h3>
+      <p class="text-sm text-ink-400 mb-5">Esta acción no se puede deshacer.</p>
+      <div class="flex gap-3">
+        <button
+          onclick="cerrarModal()"
+          class="flex-1 border border-ink-600 hover:border-ink-500 text-ink-300 rounded-xl px-4 py-2.5 text-sm transition-colors"
+          >Cancelar</button
+        >
+        <button
+          onclick="confirmarBorrarTodo()"
+          class="flex-1 bg-red-500/90 hover:bg-red-500 text-white rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
+          >Borrar</button
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Solo estilos propios de este componente.
+     El fondo/grid/scrollbar/color-scheme van en global.css porque
+     apuntan a html/body, fuera del árbol de este componente. */
+
+  .num-input {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .flow-line {
+    stroke-dasharray: 6 7;
+    animation: flow 1.1s linear infinite;
+  }
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -26;
+    }
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .pop-in {
+    animation: pop-in 0.25s ease-out;
+  }
+
+  @keyframes flash {
+    0% {
+      box-shadow: 0 0 0 0 rgba(242, 184, 75, 0.55);
+    }
+    100% {
+      box-shadow: 0 0 0 14px rgba(242, 184, 75, 0);
+    }
+  }
+  .flash {
+    animation: flash 0.6s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow-line,
+    .pop-in,
+    .flash {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "historialCAN_v2";
+  let ultimoResultado: number | null = null;
+
+  const el = (id: string) => document.getElementById(id)!;
+
+  // ---------- Schematic ----------
+  function dibujarSchematic(valores: (number | null)[]) {
+    const svg = el("schematic");
+    const activos = valores.filter((v) => v !== null && !isNaN(v) && v > 0);
+    const y0 = 40,
+      y1 = 95,
+      y2 = 150;
+    const ys = [y0, y1, y2];
+    const startX = 40,
+      mergeX = 460,
+      endX = 600;
+
+    let branches = "";
+    valores.forEach((v, i) => {
+      const y = ys[i];
+      const isActive = v !== null && !isNaN(v) && v > 0;
+      const isOptionalEmpty = i === 2 && v === null;
+      if (isOptionalEmpty) return;
+
+      const stroke = isActive ? "#F2B84B" : "#31404F";
+      const dashClass = isActive ? "flow-line" : "";
+      const label = isActive ? String(v) : "—";
+
+      branches += `
+        <path d="M ${startX} ${y} L ${mergeX} ${y}" stroke="${stroke}" stroke-width="2.5" fill="none" class="${dashClass}" stroke-linecap="round" opacity="${isActive ? 1 : 0.35}"/>
+        <circle cx="${startX}" cy="${y}" r="5" fill="${stroke}" opacity="${isActive ? 1 : 0.35}"/>
+        <text x="${startX + 14}" y="${y - 10}" font-family="JetBrains Mono, monospace" font-size="12" fill="${isActive ? "#D2DEE4" : "#4C5F70"}">${label}</text>
+        <path d="M ${mergeX} ${y} Q ${mergeX + 40} ${y} ${mergeX + 40} ${y1}" stroke="${stroke}" stroke-width="2.5" fill="none" opacity="${isActive ? 0.9 : 0.25}"/>
+      `;
+    });
+
+    const anyActive = activos.length >= 2;
+    const outColor = anyActive ? "#4FD6C4" : "#31404F";
+
+    const out = `
+      <circle cx="${mergeX + 40}" cy="${y1}" r="5" fill="${outColor}"/>
+      <path d="M ${mergeX + 40} ${y1} L ${endX} ${y1}" stroke="${outColor}" stroke-width="3" fill="none" class="${anyActive ? "flow-line" : ""}" stroke-linecap="round"/>
+      <circle cx="${endX + 8}" cy="${y1}" r="6" fill="${outColor}" opacity="${anyActive ? 1 : 0.4}"/>
+      <text x="${endX - 34}" y="${y1 - 14}" font-family="JetBrains Mono, monospace" font-size="11" fill="${outColor}" text-anchor="middle">salida</text>
+    `;
+
+    svg.innerHTML = branches + out;
+  }
+
+  function leerValoresCrudos(): (number | null)[] {
+    const raw1 = (el("can1") as HTMLInputElement).value;
+    const raw2 = (el("can2") as HTMLInputElement).value;
+    const raw3 = (el("can3") as HTMLInputElement).value;
+    return [
+      raw1 === "" ? null : parseFloat(raw1),
+      raw2 === "" ? null : parseFloat(raw2),
+      raw3 === "" ? null : parseFloat(raw3),
+    ];
+  }
+
+  function actualizarSchematicDesdeInputs() {
+    dibujarSchematic(leerValoresCrudos());
+  }
+
+  ["can1", "can2", "can3"].forEach((id) => {
+    el(id).addEventListener("input", actualizarSchematicDesdeInputs);
+  });
+
+  // ---------- Errors / toast ----------
+  function mostrarError(msg: string) {
+    const box = el("errorMsg");
+    box.textContent = msg;
+    box.classList.remove("hidden");
+  }
+  function ocultarError() {
+    el("errorMsg").classList.add("hidden");
+  }
+
+  let toastTimer: ReturnType<typeof setTimeout>;
+  function toast(msg: string) {
+    const t = el("toast");
+    t.textContent = msg;
+    t.classList.remove("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.add("hidden"), 2200);
+  }
+
+  // ---------- Core calculation ----------
+  function calcular() {
+    ocultarError();
+
+    const [can1, can2, can3Raw] = leerValoresCrudos();
+    const can3Texto = (el("can3") as HTMLInputElement).value;
+
+    if (can1 === null || can2 === null) {
+      mostrarError("Debes ingresar al menos Rama 1 y Rama 2.");
+      return;
+    }
+    if (isNaN(can1) || isNaN(can2) || (can3Texto !== "" && isNaN(can3Raw!))) {
+      mostrarError("Los valores deben ser numéricos.");
+      return;
+    }
+    if (can1 === 0 || can2 === 0 || (can3Texto !== "" && can3Raw === 0)) {
+      mostrarError("Ningún valor puede ser 0 (no se puede dividir entre 0).");
+      return;
+    }
+
+    let resultado = 1 / can1 + 1 / can2;
+    let tipoOperacion = "2 valores";
+
+    if (can3Texto !== "") {
+      resultado += 1 / can3Raw!;
+      tipoOperacion = "3 valores";
+    }
+
+    ultimoResultado = resultado;
+    pintarResultado(resultado);
+
+    const registro = {
+      id: crypto.randomUUID
+        ? crypto.randomUUID()
+        : String(Date.now() + Math.random()),
+      fecha: new Date().toLocaleString(),
+      tipo: tipoOperacion,
+      can1,
+      can2,
+      can3: can3Texto === "" ? null : can3Raw,
+      resultado: resultado.toFixed(10),
+    };
+
+    const historial = obtenerHistorial();
+    historial.unshift(registro);
+    guardarHistorial(historial);
+    renderHistorial();
+
+    el("resultCard").classList.remove("flash");
+    void (el("resultCard") as HTMLElement).offsetWidth;
+    el("resultCard").classList.add("flash");
+  }
+
+  function pintarResultado(resultado: number) {
+    const resultadoDiv = el("resultado");
+    resultadoDiv.textContent = resultado.toFixed(10);
+    resultadoDiv.classList.remove("text-ink-300", "text-teal-400", "text-amber-400");
+
+    const badge = el("badge");
+    badge.classList.remove(
+      "hidden",
+      "bg-teal-400/10",
+      "text-teal-400",
+      "bg-amber-400/10",
+      "text-amber-400",
+    );
+
+    if (resultado < 1) {
+      resultadoDiv.classList.add("text-teal-400");
+      badge.classList.add("bg-teal-400/10", "text-teal-400");
+      badge.textContent = "< 1";
+    } else {
+      resultadoDiv.classList.add("text-amber-400");
+      badge.classList.add("bg-amber-400/10", "text-amber-400");
+      badge.textContent = "≥ 1";
+    }
+    badge.classList.remove("hidden");
+
+    el("btnCopy").classList.remove("hidden");
+
+    const eqWrap = el("equivalenteWrap");
+    if (resultado !== 0) {
+      eqWrap.classList.remove("hidden");
+      el("equivalente").textContent = (1 / resultado).toFixed(10);
+    } else {
+      eqWrap.classList.add("hidden");
+    }
+  }
+
+  function copiarResultado() {
+    if (ultimoResultado === null) return;
+    navigator.clipboard
+      .writeText(ultimoResultado.toFixed(10))
+      .then(() => toast("Resultado copiado"))
+      .catch(() => toast("No se pudo copiar"));
+  }
+
+  function limpiarCampos() {
+    ["can1", "can2", "can3"].forEach((id) => ((el(id) as HTMLInputElement).value = ""));
+    ocultarError();
+    (el("can1") as HTMLInputElement).focus();
+    actualizarSchematicDesdeInputs();
+  }
+
+  // ---------- Historial ----------
+  type Registro = {
+    id: string;
+    fecha: string;
+    tipo: string;
+    can1: number;
+    can2: number;
+    can3: number | null;
+    resultado: string;
+  };
+
+  function obtenerHistorial(): Registro[] {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function guardarHistorial(historial: Registro[]) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(historial));
+  }
+
+  function toggleHistorial() {
+    el("historialPanel").classList.toggle("hidden");
+  }
+
+  function renderHistorial() {
+    const historial = obtenerHistorial();
+    el("histCount").textContent = String(historial.length);
+
+    const lista = el("listaHistorial");
+    const vacio = el("historialVacio");
+
+    if (historial.length === 0) {
+      lista.innerHTML = "";
+      vacio.classList.remove("hidden");
+      return;
+    }
+    vacio.classList.add("hidden");
+
+    lista.innerHTML = historial
+      .map(
+        (item) => `
+      <div class="bg-ink-900 border border-ink-700 rounded-xl px-4 py-3 flex items-center justify-between gap-3 group">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 text-[11px] font-mono text-ink-500 mb-1">
+            <span>${item.fecha}</span>
+            <span class="text-ink-700">·</span>
+            <span>${item.tipo}</span>
+          </div>
+          <div class="text-sm font-mono text-ink-300 truncate">
+            ${item.can1} , ${item.can2}${item.can3 !== null && item.can3 !== undefined ? ", " + item.can3 : ""}
+            <span class="text-ink-600 mx-1.5">→</span>
+            <span class="text-amber-400">${item.resultado}</span>
+          </div>
+        </div>
+        <button onclick="eliminarItem('${item.id}')" title="Eliminar"
+          class="shrink-0 text-ink-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 text-lg leading-none px-1">
+          ×
+        </button>
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  function eliminarItem(id: string) {
+    const historial = obtenerHistorial().filter((item) => item.id !== id);
+    guardarHistorial(historial);
+    renderHistorial();
+  }
+
+  function pedirBorrarTodo() {
+    el("confirmModal").classList.remove("hidden");
+  }
+  function cerrarModal() {
+    el("confirmModal").classList.add("hidden");
+  }
+  function confirmarBorrarTodo() {
+    localStorage.removeItem(STORAGE_KEY);
+    renderHistorial();
+    cerrarModal();
+    toast("Historial borrado");
+  }
+
+  // Astro procesa este bloque como módulo; para que los onclick="..." inline
+  // del HTML puedan llamarlas, se cuelgan explícitamente en window.
+  (window as any).calcular = calcular;
+  (window as any).limpiarCampos = limpiarCampos;
+  (window as any).copiarResultado = copiarResultado;
+  (window as any).toggleHistorial = toggleHistorial;
+  (window as any).eliminarItem = eliminarItem;
+  (window as any).pedirBorrarTodo = pedirBorrarTodo;
+  (window as any).cerrarModal = cerrarModal;
+  (window as any).confirmarBorrarTodo = confirmarBorrarTodo;
+
+  // ---------- Keyboard ----------
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !el("confirmModal").classList.contains("hidden")) return;
+    if (e.key === "Enter") calcular();
+    if (e.key === "Escape") cerrarModal();
+  });
+
+  // ---------- Init ----------
+  dibujarSchematic([null, null, null]);
+  renderHistorial();
+</script>

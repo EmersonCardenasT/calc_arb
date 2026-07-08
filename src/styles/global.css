@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-ink-950: #0A0E13;
+  --color-ink-900: #0F151C;
+  --color-ink-800: #161E27;
+  --color-ink-700: #202B36;
+  --color-ink-600: #31404F;
+  --color-ink-500: #4C5F70;
+  --color-ink-400: #7690A0;
+  --color-ink-300: #A6BAC5;
+  --color-ink-200: #D2DEE4;
+
+  --color-amber-400: #F2B84B;
+  --color-amber-500: #E8A430;
+  --color-teal-400: #4FD6C4;
+  --color-teal-500: #2FBFAC;
+}
+
+/* fuerza modo oscuro también en controles nativos (spinner del input number, scrollbars) */
+html {
+  color-scheme: dark;
+}
+
+html, body {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(242,184,75,0.06), transparent 40%),
+    radial-gradient(circle at 85% 100%, rgba(79,214,196,0.06), transparent 40%),
+    var(--color-ink-950);
+  min-height: 100%;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(210,222,228,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(210,222,228,0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-ink-700); border-radius: 8px; }
