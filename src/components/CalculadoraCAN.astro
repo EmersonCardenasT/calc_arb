@@ -2,14 +2,14 @@
 // Sin props por ahora
 ---
 
-<div class="max-w-3xl mx-auto pt-10">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-16">
   <!-- Header -->
-  <header class="mb-8 flex items-start justify-between gap-4">
+  <header class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
     <div>
       <div class="flex items-center gap-2.5 mb-1.5">
         <span
-          class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-amber-400/10 border border-amber-400/30 text-amber-400 font-mono text-xs font-bold"
-          >CAN</span
+          class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/10 border border-emerald-400/30 text-lg leading-none"
+          >⚽</span
         >
         <h1 class="text-2xl sm:text-[26px] font-bold tracking-tight text-white">
           Calculadora CAN
@@ -23,24 +23,52 @@
     <button
       id="btnHistorialToggle"
       onclick="toggleHistorial()"
-      class="shrink-0 mt-1 text-xs font-mono text-ink-400 hover:text-teal-400 border border-ink-700 hover:border-teal-500/40 rounded-lg px-3 py-2 transition-colors"
+      class="self-start shrink-0 text-xs font-mono text-ink-400 hover:text-emerald-400 border border-ink-700 hover:border-emerald-500/40 rounded-lg px-3 py-2 transition-colors"
     >
       Historial (<span id="histCount">0</span>)
     </button>
   </header>
 
-  <!-- Schematic -->
-  <div class="bg-ink-900/70 border border-ink-700 rounded-2xl p-4 sm:p-5 mb-5">
-    <svg
-      id="schematic"
-      viewBox="0 0 640 190"
-      class="w-full h-auto select-none"
-      preserveAspectRatio="xMidYMid meet"></svg>
+  <!-- Stats rápidas -->
+  <div class="mb-5 sm:mb-6 grid grid-cols-3 gap-2.5 sm:gap-3">
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2.5">
+      <span class="text-base sm:text-lg leading-none">⚽</span>
+      <div class="min-w-0">
+        <div id="statTotal" class="font-mono text-base sm:text-lg font-semibold text-white leading-none">0</div>
+        <div class="text-[10px] sm:text-[11px] text-ink-500 mt-1">Cálculos</div>
+      </div>
+    </div>
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2.5">
+      <span class="text-base sm:text-lg leading-none">🟢</span>
+      <div class="min-w-0">
+        <div id="statFavor" class="font-mono text-base sm:text-lg font-semibold text-emerald-400 leading-none">0</div>
+        <div class="text-[10px] sm:text-[11px] text-ink-500 mt-1">A favor</div>
+      </div>
+    </div>
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2.5">
+      <span class="text-base sm:text-lg leading-none">🔴</span>
+      <div class="min-w-0">
+        <div id="statContra" class="font-mono text-base sm:text-lg font-semibold text-red-400 leading-none">0</div>
+        <div class="text-[10px] sm:text-[11px] text-ink-500 mt-1">En contra</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Input card -->
-  <div class="bg-ink-900 border border-ink-700 rounded-2xl p-5 sm:p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+  <!-- Main content: inputs izquierda, resultado derecha en desktop -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 lg:gap-6 items-start">
+    <div class="lg:col-span-3 space-y-5">
+      <!-- Schematic -->
+      <div class="bg-ink-900/70 border border-ink-700 rounded-2xl p-4 sm:p-5">
+        <svg
+          id="schematic"
+          viewBox="0 0 640 190"
+          class="w-full h-auto select-none"
+          preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+
+      <!-- Input card -->
+      <div class="bg-ink-900 border border-ink-700 rounded-2xl p-5 sm:p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
       <div>
         <label
           for="can1"
@@ -89,64 +117,90 @@
       </div>
     </div>
 
-    <p id="errorMsg" class="hidden text-sm text-red-400 mb-4 -mt-1"></p>
+        <p id="errorMsg" class="hidden text-sm text-red-400 mb-4 -mt-1"></p>
 
-    <div class="flex gap-3">
-      <button
-        onclick="calcular()"
-        class="flex-1 bg-amber-400 hover:bg-amber-500 text-ink-950 font-semibold rounded-xl px-4 py-3 transition-colors shadow-glow"
-      >
-        Calcular
-      </button>
-      <button
-        onclick="limpiarCampos()"
-        class="text-ink-400 hover:text-white border border-ink-600 hover:border-ink-500 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
-      >
-        Limpiar
-      </button>
-    </div>
-  </div>
-
-  <!-- Result card -->
-  <div
-    id="resultCard"
-    class="mt-5 bg-ink-900 border border-ink-700 rounded-2xl p-5 sm:p-6"
-  >
-    <div class="flex items-start justify-between gap-3">
-      <div>
-        <div class="text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5">
-          Resultado (Σ 1/x)
-        </div>
-        <div
-          id="resultado"
-          class="font-mono text-3xl sm:text-4xl font-semibold text-ink-300 tracking-tight"
-        >
-          —
-        </div>
-        <div
-          id="badge"
-          class="hidden mt-2 inline-flex items-center gap-1.5 text-xs font-mono px-2.5 py-1 rounded-full"
-        >
+        <div class="flex gap-3">
+          <button
+            onclick="calcular()"
+            class="flex-1 bg-amber-400 hover:bg-amber-500 text-ink-950 font-semibold rounded-xl px-4 py-3 transition-colors shadow-glow"
+          >
+            Calcular
+          </button>
+          <button
+            onclick="limpiarCampos()"
+            class="text-ink-400 hover:text-white border border-ink-600 hover:border-ink-500 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+          >
+            Limpiar
+          </button>
         </div>
       </div>
-      <button
-        id="btnCopy"
-        onclick="copiarResultado()"
-        class="hidden shrink-0 text-xs font-mono text-ink-400 hover:text-teal-400 border border-ink-700 hover:border-teal-500/40 rounded-lg px-3 py-2 transition-colors"
-      >
-        Copiar
-      </button>
     </div>
 
-    <div id="equivalenteWrap" class="hidden mt-4 pt-4 border-t border-ink-800">
-      <div class="text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5">
-        Equivalente (1 ÷ resultado)
+    <!-- Result card -->
+    <div
+      id="resultCard"
+      class="lg:col-span-2 lg:sticky lg:top-6 bg-ink-900 border border-ink-700 rounded-2xl p-5 sm:p-6"
+    >
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-1.5">
+            Resultado (Σ 1/x)
+          </div>
+          <div
+            id="resultado"
+            class="font-mono text-3xl sm:text-4xl font-semibold text-ink-300 tracking-tight break-all"
+          >
+            —
+          </div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <div
+              id="badge"
+              class="hidden inline-flex items-center gap-1.5 text-xs font-mono px-2.5 py-1 rounded-full"
+            >
+            </div>
+            <div id="porcentaje" class="hidden text-xs font-mono text-ink-400"></div>
+          </div>
+        </div>
+        <button
+          id="btnCopy"
+          onclick="copiarResultado()"
+          class="hidden shrink-0 text-xs font-mono text-ink-400 hover:text-emerald-400 border border-ink-700 hover:border-emerald-500/40 rounded-lg px-3 py-2 transition-colors"
+        >
+          Copiar
+        </button>
       </div>
-      <div id="equivalente" class="font-mono text-lg text-teal-400">—</div>
-      <p class="text-xs text-ink-500 mt-1">
-        Útil si CAN1–CAN3 representan magnitudes combinadas en paralelo
-        (resistencias, conductancias, etc.).
-      </p>
+
+      <div id="proyeccionWrap" class="hidden mt-5 pt-5 border-t border-ink-800">
+        <div class="text-[11px] font-mono uppercase tracking-wider text-ink-500 mb-3">
+          Proyección por volumen
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-2.5">
+          <div class="rounded-xl border border-ink-700 bg-ink-950/50 p-3.5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono text-ink-500">Vol. 100</span>
+              <span id="proy100-pill" class="text-[10px] font-mono px-2 py-0.5 rounded-full">—</span>
+            </div>
+            <div id="proy100" class="font-mono text-lg font-semibold text-ink-300">—</div>
+            <div id="proy100-pct" class="text-[11px] font-mono text-ink-500 mt-1">—</div>
+          </div>
+          <div class="rounded-xl border border-ink-700 bg-ink-950/50 p-3.5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono text-ink-500">Vol. 500</span>
+              <span id="proy500-pill" class="text-[10px] font-mono px-2 py-0.5 rounded-full">—</span>
+            </div>
+            <div id="proy500" class="font-mono text-lg font-semibold text-ink-300">—</div>
+            <div id="proy500-pct" class="text-[11px] font-mono text-ink-500 mt-1">—</div>
+          </div>
+          <div class="rounded-xl border border-ink-700 bg-ink-950/50 p-3.5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono text-ink-500">Vol. 1000</span>
+              <span id="proy1000-pill" class="text-[10px] font-mono px-2 py-0.5 rounded-full">—</span>
+            </div>
+            <div id="proy1000" class="font-mono text-lg font-semibold text-ink-300">—</div>
+            <div id="proy1000-pct" class="text-[11px] font-mono text-ink-500 mt-1">—</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -295,7 +349,7 @@
     });
 
     const anyActive = activos.length >= 2;
-    const outColor = anyActive ? "#4FD6C4" : "#31404F";
+    const outColor = anyActive ? "#34D399" : "#31404F";
 
     const out = `
       <circle cx="${mergeX + 40}" cy="${y1}" r="5" fill="${outColor}"/>
@@ -401,37 +455,81 @@
   function pintarResultado(resultado: number) {
     const resultadoDiv = el("resultado");
     resultadoDiv.textContent = resultado.toFixed(10);
-    resultadoDiv.classList.remove("text-ink-300", "text-teal-400", "text-amber-400");
+    resultadoDiv.classList.remove("text-ink-300", "text-emerald-400", "text-red-400");
+
+    const esFavor = resultado < 1;
 
     const badge = el("badge");
     badge.classList.remove(
       "hidden",
-      "bg-teal-400/10",
-      "text-teal-400",
-      "bg-amber-400/10",
-      "text-amber-400",
+      "bg-emerald-400/10",
+      "text-emerald-400",
+      "bg-red-400/10",
+      "text-red-400",
     );
 
-    if (resultado < 1) {
-      resultadoDiv.classList.add("text-teal-400");
-      badge.classList.add("bg-teal-400/10", "text-teal-400");
-      badge.textContent = "< 1";
+    if (esFavor) {
+      resultadoDiv.classList.add("text-emerald-400");
+      badge.classList.add("bg-emerald-400/10", "text-emerald-400");
+      badge.textContent = "⚽ A favor";
     } else {
-      resultadoDiv.classList.add("text-amber-400");
-      badge.classList.add("bg-amber-400/10", "text-amber-400");
-      badge.textContent = "≥ 1";
+      resultadoDiv.classList.add("text-red-400");
+      badge.classList.add("bg-red-400/10", "text-red-400");
+      badge.textContent = "⚽ En contra";
     }
     badge.classList.remove("hidden");
 
+    const porcentaje = el("porcentaje");
+    porcentaje.textContent = `${Math.abs(resultado * 100).toFixed(2)}%`;
+    porcentaje.classList.remove("hidden");
+
     el("btnCopy").classList.remove("hidden");
 
-    const eqWrap = el("equivalenteWrap");
-    if (resultado !== 0) {
-      eqWrap.classList.remove("hidden");
-      el("equivalente").textContent = (1 / resultado).toFixed(10);
-    } else {
-      eqWrap.classList.add("hidden");
-    }
+    pintarProyeccion(resultado);
+  }
+
+  // ---------- Proyección por volumen ----------
+  const VOLUMENES = [100, 500, 1000] as const;
+
+  function pintarProyeccion(resultado: number) {
+    VOLUMENES.forEach((vol) => {
+      const monto = resultado * vol;
+      const esPerdida = monto > 0;
+      const esNeutro = monto === 0;
+      const porcentajeVol = Math.abs(resultado * 100).toFixed(2);
+
+      const span = el(`proy${vol}`);
+      span.textContent = `${esPerdida ? "-" : "+"}${Math.abs(monto).toFixed(2)}`;
+      span.classList.remove("text-red-400", "text-emerald-400", "text-ink-300");
+      span.classList.add(esNeutro ? "text-ink-300" : esPerdida ? "text-red-400" : "text-emerald-400");
+
+      const pill = el(`proy${vol}-pill`);
+      pill.classList.remove(
+        "bg-red-400/10",
+        "text-red-400",
+        "bg-emerald-400/10",
+        "text-emerald-400",
+        "bg-ink-700",
+        "text-ink-400",
+      );
+      if (esNeutro) {
+        pill.textContent = "Neutro";
+        pill.classList.add("bg-ink-700", "text-ink-400");
+      } else if (esPerdida) {
+        pill.textContent = "En contra";
+        pill.classList.add("bg-red-400/10", "text-red-400");
+      } else {
+        pill.textContent = "A favor";
+        pill.classList.add("bg-emerald-400/10", "text-emerald-400");
+      }
+
+      const pct = el(`proy${vol}-pct`);
+      pct.textContent = esNeutro
+        ? "0.00% de diferencia"
+        : `${porcentajeVol}% ${esPerdida ? "en contra" : "a favor"}`;
+    });
+
+    el("proyeccionWrap").classList.remove("hidden");
   }
 
   function copiarResultado() {
@@ -447,6 +545,14 @@
     ocultarError();
     (el("can1") as HTMLInputElement).focus();
     actualizarSchematicDesdeInputs();
+    el("proyeccionWrap").classList.add("hidden");
+    el("porcentaje").classList.add("hidden");
+    el("badge").classList.add("hidden");
+    el("btnCopy").classList.add("hidden");
+    el("resultado").textContent = "—";
+    el("resultado").classList.remove("text-emerald-400", "text-red-400");
+    el("resultado").classList.add("text-ink-300");
+    ultimoResultado = null;
   }
 
   // ---------- Historial ----------
@@ -476,9 +582,20 @@
     el("historialPanel").classList.toggle("hidden");
   }
 
+  function actualizarStats(historial: Registro[]) {
+    const total = historial.length;
+    const favor = historial.filter((item) => parseFloat(item.resultado) < 1).length;
+    const contra = total - favor;
+
+    el("statTotal").textContent = String(total);
+    el("statFavor").textContent = String(favor);
+    el("statContra").textContent = String(contra);
+  }
+
   function renderHistorial() {
     const historial = obtenerHistorial();
     el("histCount").textContent = String(historial.length);
+    actualizarStats(historial);
 
     const lista = el("listaHistorial");
     const vacio = el("historialVacio");
